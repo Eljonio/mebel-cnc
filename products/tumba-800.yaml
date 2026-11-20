@@ -1,0 +1,30 @@
+# Тумба с одной полкой и двумя распашными дверями.
+# Габариты — внешние, с фасадами и задней стенкой. Мм.
+product:
+  id: tumba-800
+  name: "Тумба 800×450×720"
+  prefix: T
+  qty: 1
+
+size: {width: 800, depth: 450, height: 720}
+
+materials:
+  carcass: ldsp16
+  facade: ldsp16
+  back: hdf3
+
+construction:
+  top: overlay            # overlay — крышка накладная на боковины; inset — крышка между боковинами
+  top_joint: minifix      # minifix (скрыто) или confirmat (шляпки сверху под заглушки)
+  plinth: 80              # высота цоколя, мм (0 — без цоколя, дно на полу)
+  back: overlay           # overlay — накладная ХДФ на задние торцы; groove — в паз. ДОПУЩЕНИЕ: для тумбы накладная
+  shelves:
+    count: 1
+    fixed: []             # номера полок снизу (1..n), которые крепятся конфирматами
+  doors:
+    count: 2              # 1 или 2 распашные
+    hinge_side: left      # для одной двери: left/right
+  handle:
+    pitch: 128            # межцентровое ручки
+    edge_offset: 40       # от открываемого края двери
+    from_top: 120         # центр ручки ниже верха двери

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__</title>
+<style>
+  :root { --navy:#16233b; --blue:#036afd; --bg:#f7f8fa; --line:#e3e6eb; --muted:#5b6475; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; height:100%; overflow:hidden; background:var(--bg); color:var(--navy);
+               font: 14px/1.45 Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header { height:48px; display:flex; align-items:center; gap:12px; padding:0 16px; background:var(--navy); color:#fff; }
+  header h1 { font-size:15px; margin:0; font-weight:600; }
+  main { position:absolute; top:48px; bottom:0; left:0; right:0; display:grid; grid-template-columns: 1fr 340px; }
+  #scene { position:relative; overflow:hidden; }
+  .tb { position:absolute; top:10px; left:10px; display:flex; gap:6px; flex-wrap:wrap; z-index:2; }
+  .tb button { border:1px solid var(--line); background:#fff; padding:6px 10px; border-radius:6px; cursor:pointer; font:inherit; color:var(--navy); }
+  .tb button:hover { border-color:var(--blue); }
+  aside { border-left:1px solid var(--line); background:#fff; overflow:auto; padding:12px 14px; }
+  h4 { margin:14px 0 6px; font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  table { border-collapse:collapse; width:100%; font-size:12.5px; }
+  td, th { text-align:left; padding:4px 4px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--muted); font-weight:500; }
+  td.n { white-space:nowrap; font-variant-numeric:tabular-nums; }
+  #pick { font-size:13px; } #pick b { font-size:14px; }
+  .hint { font-size:12px; color:var(--muted); }
+  @media (max-width: 760px) { main { grid-template-columns:1fr; grid-template-rows: 60% 40%; }
+    aside { border-left:0; border-top:1px solid var(--line); } }
+</style>
+</head>
+<body>
+<header><h1>__TITLE__</h1></header>
+<main>
+  <div id="scene">
+    <div class="tb">
+      <button id="b-doors">Открыть двери</button>
+      <button id="b-fac">Скрыть фасады</button>
+      <button id="b-holes">Показать отверстия</button>
+      <button id="b-front">Спереди</button>
+      <button id="b-3q">Три четверти</button>
+    </div>
+  </div>
+  <aside>
+    <div id="pick" class="hint">Нажмите на деталь — покажу её размеры. Вращать — мышью, приближать — колесом.</div>
+    <h4>Детали</h4>
+    <table id="parts"></table>
+  </aside>
+</main>
+<script>window.MEBEL_MODEL = __MODEL__;</script>
+<script>__BUNDLE__</script>
+<script>
+(function(){
+  const m = window.MEBEL_MODEL;
+  const q = new URLSearchParams(location.hash.slice(1));
+  const api = MebelViewer.mount(document.getElementById('scene'), m, {
+    open: q.has('open'), holes: q.has('holes'), facades: !q.has('nofacade'), view: q.get('view') || 'front3q',
+    onPick: p => {
+      const el = document.getElementById('pick');
+      if (!p) { el.innerHTML = 'Нажмите на деталь — покажу её размеры.'; el.className = 'hint'; return; }
+      const e = Object.entries(p.edges).map(([k,v]) => k + ':' + (v || '—')).join(' ');
+      el.className = '';
+      el.innerHTML = `<b>${p.no} ${p.name}</b><br>${p.material}<br>чистовой ${p.size}, пильный ${p.saw}<br>кромка ${e}<br>отверстий ${p.holes}`;
+    }
+  });
+  const fmt = v => (Math.round(v * 10) / 10).toString();
+  document.getElementById('parts').innerHTML = '<tr><th>№</th><th>Деталь</th><th>шт</th><th>Чистовой</th></tr>' +
+    m.parts.map(p => `<tr><td>${p.no}</td><td>${p.name}</td><td>${p.qty}</td><td class="n">${fmt(p.L)}×${fmt(p.W)}×${p.t}</td></tr>`).join('');
+  const bd = document.getElementById('b-doors'), bf = document.getElementById('b-fac'), bh = document.getElementById('b-holes');
+  let fac = !q.has('nofacade'), holes = q.has('holes');
+  bd.textContent = q.has('open') ? 'Закрыть двери' : 'Открыть двери';
+  bd.onclick = () => { const o = !api.doorsOpen; api.setDoors(o); bd.textContent = o ? 'Закрыть двери' : 'Открыть двери'; };
+  bf.onclick = () => { fac = !fac; api.setFacades(fac); bf.textContent = fac ? 'Скрыть фасады' : 'Показать фасады'; };
+  bh.onclick = () => { holes = !holes; api.setHoles(holes); bh.textContent = holes ? 'Скрыть отверстия' : 'Показать отверстия'; };
+  document.getElementById('b-front').onclick = () => api.view('front');
+  document.getElementById('b-3q').onclick = () => api.view('front3q');
+})();
+</script>
+</body>
+</html>

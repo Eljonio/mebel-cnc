@@ -1,0 +1,21 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+
+# Node (viewer build)
+node_modules/
+
+# Generated results (DXF, xlsx, cutting maps, 3D, renders, reports)
+out/
+*.blend
+*.blend1
+*.glb
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store

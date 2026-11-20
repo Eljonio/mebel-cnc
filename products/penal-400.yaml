@@ -1,0 +1,31 @@
+# Шкаф-пенал: высокий, одна дверь, четыре полки (третья снизу закреплена конфирматами для жёсткости).
+# Другие решения, чем у тумбы, чтобы проверить, что параметры работают: крышка между боковинами,
+# задняя стенка в паз, одна дверь на 4 петлях, неподвижная полка на конфирматах.
+product:
+  id: penal-400
+  name: "Шкаф-пенал 400×400×2000"
+  prefix: P
+  qty: 1
+
+size: {width: 400, depth: 400, height: 2000}
+
+materials:
+  carcass: ldsp16
+  facade: ldsp16
+  back: hdf3
+
+construction:
+  top: inset
+  top_joint: confirmat
+  plinth: 80
+  back: groove
+  shelves:
+    count: 4
+    fixed: [3]
+  doors:
+    count: 1
+    hinge_side: left
+  handle:
+    pitch: 128
+    edge_offset: 40
+    from_floor: 1000      # высокий шкаф: ручка на высоте руки
